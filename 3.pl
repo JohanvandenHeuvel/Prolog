@@ -1,3 +1,5 @@
+use_module(library(lists)).
+
 % is the first argument a member of the second argument.
 member(X, [X|_]).
 member(X, [_|Y]) :-
@@ -19,5 +21,20 @@ path(From, To, Graph, Visited, Path) :-
     not(member(X, Visited)),
     % Recursion into the next node.
     path(X, To, Graph, [From|Visited], Path).  
+
+lists_of_length([], N, Lists, Result) :-
+    Result = Lists.
+lists_of_length([X|Y], N, Lists, Result) :-
+    (length(X, M), M == N) -> lists_of_length(Y, N, [X|Lists], Result); lists_of_length(Y, N, Lists, Result).
+
+longest_paths(From, To, Graph, Paths) :-
+    findall(
+        Path, 
+        path(From, To, Graph, [], Path),
+        Paths),
+    % Get the length of the longest Path
+    max_member(Max, Paths), length(Max, N),
+    % Get all paths of longest length
+    lists_of_length(Paths, N, [], Result),
+    write(Result).
     
-      
